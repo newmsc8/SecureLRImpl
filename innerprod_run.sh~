@@ -1,0 +1,97 @@
+#!/bin/bash
+BIN=./bin/innerprod
+MOD=509
+LENGTH=1000 #3618
+TI_ALICE=$BIN/ti_alice
+INPUT_ALICE=$BIN/input_alice
+TI_BOB=$BIN/ti_bob
+INPUT_BOB=$BIN/input_bob
+OUTPUT_FILE=$BIN/output_gen
+BIN_TI_ALICE=$BIN/bin_ti_alice
+BIN_INPUT_ALICE=$BIN/bin_input_alice
+BIN_TI_BOB=$BIN/bin_ti_bob
+BIN_INPUT_BOB=$BIN/bin_input_bob
+BIN_OUTPUT_FILE=$BIN/bin_output_gen
+PORT=12345
+ALICE_HOST=127.0.0.1
+
+if [[ ! -f $BIN ]];
+then
+mkdir -p $BIN
+fi
+
+case $1 in
+
+pre)
+$0 inputgen
+$0 ti
+;;
+
+bin_pre)
+$0 bin_ti
+$0 bin_inputgen
+;;
+
+all_pre)
+$0 inputgen
+$0 ti
+$0 bin_ti
+$0 bin_inputgen
+;;
+
+alice)
+$BIN/innerprod_alice $MOD $PORT $TI_ALICE $INPUT_ALICE
+exit 0
+;;
+
+bin_alice)
+$BIN/innerprod_bin_alice $MOD $LENGTH $PORT $BIN_TI_ALICE $BIN_INPUT_ALICE
+exit 0
+;;
+
+bob)
+$BIN/innerprod_bob $MOD $ALICE_HOST $PORT $TI_BOB $INPUT_BOB
+exit 0
+;;
+
+bin_bob)
+$BIN/innerprod_bin_bob $MOD $LENGTH $ALICE_HOST $PORT $BIN_TI_BOB $BIN_INPUT_BOB
+exit 0
+;;
+
+ti)
+$BIN/innerprod_ti $MOD $LENGTH $TI_ALICE $TI_BOB
+exit 0
+;;
+
+bin_ti)
+$BIN/innerprod_bin_ti $MOD $LENGTH $BIN_TI_ALICE $BIN_TI_BOB
+exit 0
+;;
+
+bin_readti)
+$BIN/innerprod_bin_readti $MOD $LENGTH $BIN_TI_ALICE $BIN_TI_BOB
+exit 0
+;;
+
+inputgen)
+$BIN/innerprod_inputgen $MOD $LENGTH $INPUT_ALICE $INPUT_BOB $OUTPUT_FILE
+exit 0
+;;
+
+bin_inputgen)
+$BIN/innerprod_bin_inputgen $MOD $LENGTH $BIN_INPUT_ALICE $BIN_INPUT_BOB $BIN_OUTPUT_FILE
+exit 0
+;;
+
+bin_readinput)
+$BIN/innerprod_bin_readinput $MOD $LENGTH $BIN_INPUT_ALICE $BIN_INPUT_BOB $BIN_OUTPUT_FILE
+exit 0
+;;
+
+*)
+  echo "Usage: $0 (alice|bob|ti|inputgen)"
+  exit 2
+  ;;
+
+esac

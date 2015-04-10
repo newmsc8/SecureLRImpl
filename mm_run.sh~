@@ -1,0 +1,111 @@
+#!/bin/bash
+BIN=/home/sina/Desktop/Code/bernardo-SLAimplementation/bin/mm
+MOD=509
+
+#Matrix A has i rows and j columns
+#Matrix B has j rows and k columns
+#Output matrix has i rows and k columns
+i=10 
+k=10
+j=10
+
+TI_FOLDER=$BIN/ti
+INPUT_FOLDER=$BIN/input
+GEN_OUTPUT_FILE=$BIN/output_gen
+ALICE_OUTPUT_FILE=$BIN/alice_output
+BOB_OUTPUT_FILE=$BIN/bob_output
+PORT=12345
+ALICE_HOST=127.0.0.1
+
+if [ $# -eq 2 ]
+then
+i=$2 
+k=$2
+j=$2
+TI_FOLDER=$TI_FOLDER"_"$2
+INPUT_FOLDER=$INPUT_FOLDER"_"$2
+GEN_OUTPUT_FILE=$GEN_OUTPUT_FILE"_"$2
+ALICE_OUTPUT_FILE=$ALICE_OUTPUT_FILE"_"$2
+BOB_OUTPUT_FILE=$BOB_OUTPUT_FILE"_"$2
+
+ALICE_TI_PREFIX=$TI_FOLDER/alice
+ALICE_INPUT_PREFIX=$INPUT_FOLDER/alice
+BOB_TI_PREFIX=$TI_FOLDER/bob
+BOB_INPUT_PREFIX=$INPUT_FOLDER/bob
+
+fi
+
+ALICE_TI_PREFIX=$TI_FOLDER/alice
+ALICE_INPUT_PREFIX=$INPUT_FOLDER/alice
+BOB_TI_PREFIX=$TI_FOLDER/bob
+BOB_INPUT_PREFIX=$INPUT_FOLDER/bob
+
+echo "Using the following values"
+echo PORT=$PORT
+echo ALICE_HOST=$ALICE_HOST
+echo i=$i 
+echo k=$k
+echo j=$j
+echo ALICE_TI_PREFIX=$ALICE_TI_PREFIX
+echo ALICE_INPUT_PREFIX=$ALICE_INPUT_PREFIX
+echo BOB_TI_PREFIX=$BOB_TI_PREFIX
+echo BOB_INPUT_PREFIX=$BOB_INPUT_PREFIX
+echo GEN_OUTPUT_FILE=$GEN_OUTPUT_FILE
+echo ALICE_OUTPUT_FILE=$ALICE_OUTPUT_FILE
+echo BOB_OUTPUT_FILE=$BOB_OUTPUT_FILE
+
+if [[ ! -f $BIN ]];
+then
+mkdir -p $BIN
+fi
+
+if [[ ! -f $TI_FOLDER ]];
+then
+mkdir -p $TI_FOLDER
+fi
+
+if [[ ! -f $INPUT_FOLDER ]];
+then
+mkdir -p $INPUT_FOLDER
+fi
+
+case $1 in
+
+alice)
+$BIN/mm_alice $PORT $MOD $ALICE_TI_PREFIX $ALICE_INPUT_PREFIX $ALICE_OUTPUT_FILE $i $k
+exit 0
+;;
+
+bob)
+$BIN/mm_bob $ALICE_HOST $PORT $MOD $BOB_TI_PREFIX $BOB_INPUT_PREFIX $BOB_OUTPUT_FILE $i $k \
+> mm_bob_times
+exit 0
+;;
+
+alice_optimized)
+$BIN/mm_alice_optimized $PORT $MOD $ALICE_TI_PREFIX $ALICE_INPUT_PREFIX $ALICE_OUTPUT_FILE $i $k
+exit 0
+;;
+
+bob_optimized)
+$BIN/mm_bob_optimized $ALICE_HOST $PORT $MOD $BOB_TI_PREFIX $BOB_INPUT_PREFIX $BOB_OUTPUT_FILE $i $k \
+> mm_bob_times
+exit 0
+;;
+
+ti)
+$BIN/mm_ti $MOD $i $j $k $ALICE_TI_PREFIX $BOB_TI_PREFIX
+exit 0
+;;
+
+inputgen)
+$BIN/mm_inputgen $MOD $i $j $k $ALICE_INPUT_PREFIX $BOB_INPUT_PREFIX $GEN_OUTPUT_FILE
+exit 0
+;;
+
+*)
+  echo "Usage: $0 (alice|bob|ti|inputgen)"
+  exit 2
+  ;;
+
+esac

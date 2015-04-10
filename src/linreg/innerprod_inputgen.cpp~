@@ -1,0 +1,102 @@
+//innerprod_inoutgen.cpp
+//Generates random inputs for the innerprod protocol
+
+#define _DEBUG
+
+#include <fstream>
+#include <SLA/innerprod_params.hpp>
+#include <NTL/vec_ZZ_p.h>
+#include <SLA/ntl_random.hpp>
+#include <boost/lexical_cast.hpp>
+#include <SLA/debug.hpp>
+
+using namespace NTL;
+
+int main(int argc, char* argv[])
+{
+
+  if (argc != 6)
+  {
+    std::cerr << "Usage: " << argv[0] << " <modulus> <vector_length> <alice_input_file> <bob_input_file> <output_file>\n";
+    return 1;
+  }
+
+  //set modulus to ModP 
+  long mod_ = boost::lexical_cast<long>(argv[1]);
+  if (mod_ > MOD)
+  {
+    std::cerr << "Maximum modulus is: " << MOD;
+    return 1;
+  }
+  ZZ p;
+  p = mod_; 
+  ZZ_p::init(p);
+
+  //create vectors of ZZ_p
+  long length;
+  length = boost::lexical_cast<long>(argv[2]);
+  if (length > MAX_VEC_LENGTH)
+  {
+    std::cerr << "Maximum vector length is: " << MAX_VEC_LENGTH << std::endl;
+    return 1;
+  }
+
+  //set ntl rng seed
+  set_seed_prng();
+  
+  DEBUG("Generating X");
+  //Vec<ZZ_p> x(gen_rnd_vec(length));
+  Vec<ZZ_p> x;
+  gen_rnd_vec(x,length);
+
+  DEBUG("Generating Y");
+  //Vec<ZZ_p> y(gen_rnd_vec(length));
+  Vec<ZZ_p> y;
+  gen_rnd_vec(y,length);
+  
+  DEBUG("Computing <X,Y>");
+  ZZ_p s;
+  InnerProduct(s, x, y);
+  
+  ofstream input_alice(argv[3], ios::trunc);
+ 
+  DEBUG("Writing " << argv[3]);
+  
+  if (input_alice.is_open())
+  {
+    input_alice << x;
+  } else {
+    std::cerr << "Failed to Open/Create file " << argv[3] << std::endl;
+  }
+
+  input_alice.close();
+ 
+  ofstream input_bob(argv[4], ios::trunc);
+  
+  DEBUG("Writing " << argv[4]);
+  
+  if (input_bob.is_open())
+  {
+    input_bob << y;
+  } else {
+    std::cerr << "Failed to Open/Create file " << argv[4] << std::endl;
+  }
+
+  input_bob.close();
+  
+  ofstream output(argv[5], ios::trunc);
+  
+  DEBUG("Writing " << argv[5]);
+  
+  if (output.is_open())
+  {
+    output << s << std::endl;
+  } else {
+    std::cout << "Failed to Open/Create file " << argv[5];
+  }
+
+  output.close();
+
+  //DEBUG("Vector x:\n" << x << "\nVector y:\n" << y << "\nInner product s: " << s << endl);
+}
+

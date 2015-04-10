@@ -1,0 +1,97 @@
+#$BIN/bash
+BIN=./bin/mm
+SRC=./src/mm
+SLA=./include/
+BOOST=../boost_1_55_0
+NTL=/usr/local/include/
+GMP_LIB=/usr/local/lib/libgmp.a
+NTL_LIB=/usr/local/lib/libntl.a
+
+if [[ ! -f $BIN ]];
+then
+mkdir -p $BIN
+fi
+
+case $1 in
+
+all)
+$0 alice
+$0 bob
+$0 inputgen
+$0 bench
+$0 ntl_test
+$0 ti
+$0 bob_optimized
+$0 alice_optimized
+;;
+
+parties)
+$0 alice
+$0 bob
+;;
+
+parties_optimized)
+$0 bob_optimized
+$0 alice_optimized
+;;
+
+ti)
+echo "Compiling "$SRC"/mm_ti.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/mm_ti $SRC/mm_ti.cpp $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+inputgen)
+echo "Compiling "$SRC"/mm_inputgen.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/mm_inputgen $SRC/mm_inputgen.cpp $BOOST/stage/lib/libboost_system.a $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+bench)
+echo "Compiling "$SRC"/mm_bench.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/mm_bench $SRC/mm_bench.cpp $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+bob)
+echo "Compiling "$SRC"/mm_bob.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -O3 -ftree-vectorize -msse2 -m64 -o $BIN/mm_bob $SRC/mm_bob.cpp $BOOST/stage/lib/libboost_thread.a $BOOST/stage/lib/libboost_system.a -lrt -lpthread $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+alice)
+echo "Compiling "$SRC"/mm_alice.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -O3 -ftree-vectorize -msse2 -m64 -o $BIN/mm_alice $SRC/mm_alice.cpp $BOOST/stage/lib/libboost_system.a $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+bob_optimized)
+echo "Compiling "$SRC"/mm_bob_optimized.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -O3 -ftree-vectorize -msse2 -m64 -o $BIN/mm_bob_optimized $SRC/mm_bob_optimized.cpp $BOOST/stage/lib/libboost_thread.a $BOOST/stage/lib/libboost_system.a -lrt -lpthread $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+alice_optimized)
+echo "Compiling "$SRC"/mm_alice_optimized.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -O3 -ftree-vectorize -msse2 -m64 -o $BIN/mm_alice_optimized $SRC/mm_alice_optimized.cpp $BOOST/stage/lib/libboost_system.a $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+ntl_test)
+echo "Compiling "$SRC"/ntl_test.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -O3 -ftree-vectorize -msse2 -m64 -o $BIN/ntl_test $SRC/ntl_test.cpp $NTL_LIB $GMP_LIB $BOOST/stage/lib/libboost_random.a
+exit 0
+;;
+
+ntl_test_opt)
+echo "Compiling "$SRC"/ntl_test.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -O3 -ftree-vectorize -msse2 -m64 -o $BIN/ntl_test $SRC/ntl_test.cpp $NTL_LIB $GMP_LIB $BOOST/stage/lib/libboost_random.a
+exit 0
+;;
+
+*)
+    echo "Usage: $0 {ntl_test|bob|alice|ti|inputgen|bench}"
+    exit 2
+    ;;
+
+esac

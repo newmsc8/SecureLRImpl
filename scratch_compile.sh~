@@ -1,0 +1,21 @@
+#$BIN/bash
+SRC=src/scratchpad
+BIN=bin/scratchpad
+SLA=./include/
+BOOST=../boost_1_57_0
+NTL=/usr/local/include/
+GMP_LIB=/usr/local/lib/libgmp.a
+NTL_LIB=/usr/local/lib/libntl.a
+
+if [[ ! -f $BIN ]];
+then
+mkdir -p $BIN
+fi
+
+basename=$(basename "$1")
+extension="${basename##*.}"
+filename="${basename%.*}"
+
+echo "Compiling $1"
+c++ -I $NTL -I $BOOST -I $SLA -O3 -ftree-vectorize -msse2 -m64 -o $BIN/$filename $SRC/$basename $NTL_LIB $GMP_LIB $BOOST/stage/lib/libboost_random.a
+exit 0

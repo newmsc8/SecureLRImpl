@@ -1,0 +1,61 @@
+//
+// innerprod_bob.cpp
+// ~~~~~~~~~~~~~~~
+//Inner product bob
+//
+
+//#define _DEBUG 1
+
+#include <cstdlib>
+#include <iostream>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/asio.hpp>
+#include <NTL/vec_ZZ_p.h>
+#include <SLA/innerprod_params.hpp>
+#include <SLA/debug.hpp>
+#include <SLA/tcp_client.hpp>
+#include <SLA/innerprod_bob.hpp>
+
+using boost::asio::ip::tcp;
+
+int main(int argc, char* argv[])
+{
+  try
+  {
+    if (argc != 6)
+    {
+      std::cerr << "Usage: bob <modulus> <host> <port> <ti_file> <input_file>\n";
+      return 1;
+    }
+    
+    //set the modulus size used in NTL to MOD defined in the includes
+    ZZ p;
+    p = boost::lexical_cast<long>(argv[1]);
+    ZZ_p::init(p);
+    DEBUG("set modulus to: " << p);
+	//std::cout << "SALAM1" << std::endl;
+    //setup network connection
+    boost::asio::io_service io_service;
+
+    tcp::resolver resolver(io_service);
+    tcp::resolver::query query(argv[2], argv[3]);
+    tcp::resolver::iterator iterator = resolver.resolve(query);
+	//std::cout << "SALAM2" << std::endl;    
+    //create instance of protoco9l
+    twoparty_runner_ptr protocol(new innerprod_bob(argv[4],argv[5]));
+	//std::cout << "SALAM3" << std::endl;
+    //create tcp/ip client to run protocol
+    tcp_client c(io_service, iterator, protocol);
+	//std::cout << "SALAM4" << std::endl;    
+    io_service.run();
+	//std::cout << "SALAM5" << std::endl;
+    
+  }
+  catch (std::exception& e)
+  {
+    std::cerr << "Exception: " << e.what() << "\n";
+  }
+
+  return 0;
+}

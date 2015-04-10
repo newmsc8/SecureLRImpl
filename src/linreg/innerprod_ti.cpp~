@@ -1,0 +1,106 @@
+//
+//innerprod_ti.cpp
+//
+
+#define _DEBUG
+
+#include <fstream>
+#include <SLA/innerprod_params.hpp>
+#include <NTL/vec_ZZ_p.h>
+#include <NTL/mat_ZZ_p.h>
+#include <SLA/ntl_random.hpp>
+#include <boost/lexical_cast.hpp>
+#include <SLA/debug.hpp>
+
+using namespace NTL;
+
+int main(int argc, char* argv[])
+{
+
+  if (argc != 5)
+  {
+    std::cerr << "Usage: " << argv[0] << " <modulus> <vector_length> <ti_alice> <ti_bob>" << std::endl;
+    return 1;
+  }
+
+  //set modulus to ModP
+  long mod_ = boost::lexical_cast<long>(argv[1]);
+  if (mod_ > MOD)
+  {
+    std::cerr << "Maximum modulus is: " << MOD;
+    return 1;
+  }
+  ZZ p;
+  p = mod_;
+  ZZ_p::init(p);
+
+  //create vectors of ZZ_p
+  long length;
+  length = boost::lexical_cast<long>(argv[2]);
+  
+  if (length > MAX_VEC_LENGTH)
+  {
+    std::cerr << "Maximum vector length is: " << MAX_VEC_LENGTH << std::endl;
+    return 1;
+  }
+
+  //set ntl rng seed
+  set_seed_prng();
+  
+  DEBUG("Generating X_0");
+  //Vec<ZZ_p> x0(gen_rnd_vec(length));
+  Vec<ZZ_p> x0;
+  gen_rnd_vec(x0,length);
+
+  DEBUG("Generating Y_0");
+  //Vec<ZZ_p> y0(gen_rnd_vec(length));
+  Vec<ZZ_p> y0;
+  gen_rnd_vec(y0,length);
+  
+  DEBUG("Computing <X_0,Y_0>");
+  ZZ_p s0;
+  InnerProduct(s0, x0, y0);
+
+//testing
+  DEBUG("Generating A Matrix");
+  Mat<ZZ_p> m;
+  long s = boost::lexical_cast<long>(1000);
+  
+  m.SetDims(s,s);
+  gen_rnd_mat(m);
+  ofstream ti_sina("./salam.out");
+  ti_sina << m;
+  ti_sina.close();
+ 
+//testing  
+
+
+  ofstream ti_alice(argv[3], ios::trunc);
+ 
+  DEBUG("Writing " << argv[3]);
+  
+  if (ti_alice.is_open())
+  {
+    ti_alice << x0;
+  } else {
+    std::cout << "Failed to Open/Create file " << argv[3];
+  }
+
+  ti_alice.close();
+ 
+  ofstream ti_bob(argv[4], ios::trunc);
+  
+  DEBUG("Writing " << argv[4]);
+  
+  if (ti_bob.is_open())
+  {
+    ti_bob << y0 << endl << s0;
+  } else {
+    std::cout << "Failed to Open/Create file " << argv[4];
+  }
+
+  ti_bob.close();
+  
+  //DEBUG("Vector x0:\n" << x0 << "\nVector y0:\n" << y0 << "\nInner product s0: " << s0 << endl);
+}
+
