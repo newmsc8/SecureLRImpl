@@ -22,12 +22,9 @@ public:
     start_connect();
   }
 
-  #ifdef _DEBUG
   ~tcp_client()
   {
-	DEBUG("tcp connection destroyed");
   }
-  #endif
 
   void start_connect()
   {
@@ -43,7 +40,6 @@ public:
 
     if (!error)
     {
-	  DEBUG("connection started");
       session->start();
     }
     else

@@ -1,28 +1,11 @@
 #!/bin/bash
 BIN=./bin/linreg
-MOD=9999999
-SEED=200
-DIM=100 #3618
-A_ALICE=$BIN/a_alice
-A_BOB=$BIN/a_bob
-B_ALICE=$BIN/b_alice
-B_BOB=$BIN/b_bob
-C_ALICE=$BIN/c_alice
-C_BOB=$BIN/c_bob
-X_ALICE=$BIN/x_alice
-X_BOB=$BIN/x_bob
-Y_ALICE=$BIN/y_alice
-Y_BOB=$BIN/y_bob
-XY_ALICE=$BIN/xy_alice
-XY_BOB=$BIN/xy_bob
-OUTPUT=$BIN/output
-OUT_ALICE=$BIN/out_alice
-OUT_BOB=$BIN/out_bob
-R_ALICE=$BIN/r_alice
-RP_ALICE=$BIN/rp_alice
-R_BOB=$BIN/r_bob
-RP_BOB=$BIN/rp_bob
-
+MOD=999999999999999
+MINUS1=100000000000000
+SEED=100
+PREC=10
+LAMBDA=10000000000
+DIM=100
 PORT=7878
 ALICE_HOST=127.0.0.1
 
@@ -40,27 +23,32 @@ $0 ti
 
 
 alice)
-$BIN/linreg_alice $MOD $PORT $X_ALICE $Y_ALICE $A_ALICE $B_ALICE $C_ALICE $DIM $OUT_ALICE $XY_ALICE $R_ALICE $RP_ALICE 
+$BIN/linreg_alice $MOD $PORT $DIM $MINUS1
 exit 0
 ;;
 
 bob)
-$BIN/linreg_bob $MOD $ALICE_HOST $PORT $X_BOB $Y_BOB $A_BOB $B_BOB $C_BOB $DIM $OUT_BOB $XY_BOB $R_BOB $RP_BOB
+$BIN/linreg_bob $MOD $ALICE_HOST $PORT $DIM $MINUS1
 exit 0
 ;;
 
 ti)
-$BIN/linreg_ti $MOD $DIM $A_ALICE $A_BOB $B_ALICE $B_BOB $C_ALICE $C_BOB $SEED $R_ALICE $R_BOB $RP_ALICE $RP_BOB 
+$BIN/linreg_ti $MOD $DIM $PREC $LAMBDA
 exit 0
 ;;
 
 inputgen)
-$BIN/linreg_inputgen $MOD $DIM $X_ALICE $X_BOB $Y_ALICE $Y_BOB $OUTPUT $XY_ALICE $XY_BOB $SEED
+$BIN/linreg_inputgen $MOD $DIM $SEED
+exit 0
+;;
+
+test)
+$BIN/linreg_test $MOD $DIM
 exit 0
 ;;
 
 *)
-  echo "Usage: $0 (alice|bob|ti|inputgen)"
+  echo "Usage: $0 (alice|bob|ti|inputgen|test)"
   exit 2
   ;;
 

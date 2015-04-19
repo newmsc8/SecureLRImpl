@@ -39,7 +39,7 @@ public:
 
     if (!error)
     {
-      std::cout<<"connection started"<<std::endl; 
+	  DEBUG("connection started");
        
       session->start();
     }

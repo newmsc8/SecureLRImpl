@@ -13,7 +13,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
-//#include <boost/thread/thread.hpp>
 #include <SLA/protocol_message.hpp>
 
 using boost::asio::ip::tcp;
@@ -38,16 +37,12 @@ class twoparty_runner
   : public protocol_party
 {
 public:
-  #ifdef _DEBUG
   ~twoparty_runner()
   {
-	DEBUG("protocol terminated");      
   }
-  #endif
 
   void register_party(protocol_party_ptr party)
   {
-    //DEBUG("party registered");
 
     party_=party;
     protocol_start();
@@ -55,7 +50,6 @@ public:
 
   void unregister_party()
   {
-	DEBUG("party unregistered");      
 
     party_.reset();
   }
@@ -72,10 +66,8 @@ public:
 
   void terminate_protocol()
   {
-	DEBUG("protocol terminating");      
 
     party_->disconnect();
-//    unregister_party();
   }
 
   void deliver(protocol_message_ptr msg)
@@ -85,14 +77,12 @@ public:
 
   void send_message(protocol_message_ptr msg)
   {
-    //DEBUG("delivering message");
     msg->encode_header();
     party_->deliver(msg);
   }
    
   void disconnect()
   {
-	DEBUG("virtual party disconnecting");
   }
 
   virtual void protocol_start() = 0;
@@ -118,12 +108,9 @@ public:
   {
   }
  
-  #ifdef _DEBUG 
   ~protocol_session()
   {
-	DEBUG("session terminated");
   }
-  #endif
 
   tcp::socket& socket()
   {
@@ -133,7 +120,6 @@ public:
   void start()
   {
 
-	DEBUG("session started"); 
      
     protocol_->register_party(shared_from_this());
 
@@ -162,7 +148,6 @@ public:
 
   void disconnect()
   {
-    //DEBUG("session disconnecting");
       
     #ifdef _DEBUG
     boost::system::error_code error;
@@ -192,7 +177,6 @@ private:
 
   void handle_read_header(protocol_message_ptr read_msg_, const boost::system::error_code& error)
   {
-    //DEBUG("message received.");
 
     if (!error && read_msg_->decode_header())
     {
@@ -203,7 +187,6 @@ private:
     }
     else
     {
-      DEBUG(error.value() << "," << error.message()); 
 
       protocol_->unregister_party();
     }
@@ -212,7 +195,6 @@ private:
   void handle_read_body(protocol_message_ptr deliver_msg, const boost::system::error_code& error)
   {
 
-    DEBUG("message body: " << deliver_msg->body()); 
 
     protocol_->receive_msg(deliver_msg);
 
@@ -227,7 +209,6 @@ private:
     }
     else
     {
-      DEBUG(error.value() << "," << error.message()); 
 
       protocol_->unregister_party();
     }
@@ -249,7 +230,6 @@ private:
     }
     else
     {
-      DEBUG(error.value() << "," << error.message()); 
 
       protocol_->unregister_party();
     }

@@ -7,7 +7,6 @@
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/asio.hpp>
-#include <SLA/debug.hpp>
 #include <SLA/protocol_session.hpp>
 
 using boost::asio::ip::tcp;
@@ -39,8 +38,6 @@ public:
 
     if (!error)
     {
-	  DEBUG("connection started");
-       
       session->start();
     }
     else

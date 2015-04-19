@@ -45,8 +45,15 @@ c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/linreg_alice $SRC/linreg_alice.cpp $B
 exit 0
 ;;
 
+test)
+echo "Compiling "$SRC"/linreg_test.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/linreg_test $SRC/linreg_test.cpp $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+
 *)
-    echo "Usage: $0 {bob|alice|ti|inputgen}"
+    echo "Usage: $0 {bob|alice|ti|inputgen|test}"
     exit 2
     ;;
 

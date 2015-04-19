@@ -42,17 +42,13 @@ class protocol_char_buffer
   {
     
     length_ = length;
-    //DEBUG("set input parameters with setg");
     this->setg(begin_, begin_, begin_+length_);
-    //DEBUG("set output paramters with setp");
     this->setp(begin_,begin_+length_);
   }
 
   void reset_buffer()
   {
-    //DEBUG("set input parameters with setg");
     this->setg(begin_, begin_, end_);
-    //DEBUG("set output paramters with setp");
     this->setp(begin_,end_);
   }
 
@@ -72,7 +68,7 @@ class protocol_message
 {
 public:
   enum { header_length = sizeof(header_type) }; //size of header_type
-  enum { max_body_length = MAX_BODY_LENGTH };
+  enum { max_body_length = 1000000000 };
 
   protocol_message()
   {
@@ -144,7 +140,6 @@ public:
       header_.body_length = max_body_length;      
     }
     message_buffer.set_buffer_length(header_.body_length);
-    //DEBUG("set body_length to: " << header_.body_length);
     return header_.body_length;
   }
 
@@ -152,8 +147,6 @@ public:
   {
     using namespace std;
     memcpy(&header_, data_, header_length);
-    DEBUG("decoded header_.body_length is: " << header_.body_length); 
-    //if(h_body_length == strlen(this->body()) && h_body_length <= max_body_length)
     if(header_.body_length <= max_body_length)
     {
       body_length(header_.body_length);
@@ -167,7 +160,6 @@ public:
     using namespace std; // For sprintf and memcpy.
     this->put('\0');
     header_.body_length = strlen(this->body());
-    DEBUG("header_.body_length is: " << header_.body_length);
     body_length(header_.body_length);
 
     memcpy(data_, &header_, header_length);
@@ -175,7 +167,6 @@ public:
 
   void reset_message()
   {
-    DEBUG("resetting message parameters");
     message_buffer.reset_buffer();
     header_.body_length=max_body_length;
   }
