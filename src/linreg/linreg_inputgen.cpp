@@ -25,7 +25,10 @@ int main(int argc, char* argv[])
   X.SetDims(dim,dim);
 	XA.SetDims(dim,dim);
 	XB.SetDims(dim,dim);
-  gen_rnd_mat(X,bnd,q);
+  gen_rnd_mat(X,2 * bnd - 1,q);
+	for (long i = 0; i<dim; i++)
+		for (long j = 0; j<dim; j++)
+			X[i][j] = X[i][j] - bnd + 1;
 	gen_rnd_mat(XA);
 	sub(XB,X,XA);
 	ofstream x_alice(X_ALICE, ios::trunc);
@@ -39,7 +42,10 @@ int main(int argc, char* argv[])
   Y.SetDims(dim,dim);
 	YA.SetDims(dim,dim);
 	YB.SetDims(dim,dim);
-  gen_rnd_mat(Y,bnd,q);
+  gen_rnd_mat(Y,2 * bnd - 1,q);
+	for (long i = 0; i<dim; i++)
+		for (long j = 0; j<dim; j++)
+			Y[i][j] = Y[i][j] - bnd + 1;
 	gen_rnd_mat(YA);
 	sub(YB,Y,YA);
 	ofstream y_alice(Y_ALICE, ios::trunc);

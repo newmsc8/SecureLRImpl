@@ -17,8 +17,7 @@ int main(int argc, char* argv[])
 {
   ZZ q = boost::lexical_cast<ZZ>(argv[1]);
   ZZ_p::init(q);
-  long dim;
-  dim = boost::lexical_cast<long>(argv[2]);
+  long dim = boost::lexical_cast<long>(argv[2]);
 	long bnd = boost::lexical_cast<long>(argv[3]);
   set_seed_prng();
 

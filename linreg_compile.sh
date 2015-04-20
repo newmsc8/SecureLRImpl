@@ -19,6 +19,7 @@ $0 alice
 $0 bob
 $0 inputgen
 $0 ti
+$0 test
 ;;
 
 ti)
