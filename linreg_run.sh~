@@ -40,7 +40,7 @@ exit 0
 ;;
 
 test)
-$BIN/linreg_test $MOD
+$BIN/linreg_test $MOD $PREC
 exit 0
 ;;
 
@@ -126,7 +126,7 @@ $BIN/linreg_ti 7 $MOD $ROW $COL $PREC $LAMBDA
 $BIN/linreg_alice 7 $MOD $PORT $ROW $COL $MINUS1 &
 sleep 2
 $BIN/linreg_bob 7 $MOD $ALICE_HOST $PORT $ROW $COL $MINUS1 $PREC
-$BIN/linreg_test $MOD
+$BIN/linreg_test $MOD $PREC
 exit 0
 ;;
 

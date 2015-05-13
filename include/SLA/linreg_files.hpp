@@ -26,6 +26,7 @@
 #define Z5_ALICE "./bin/linreg/z5_alice"
 #define Z5_BOB "./bin/linreg/z5_bob"
 #define Z5 "./bin/linreg/z5"
+#define SEC_BETA "./bin/linreg/sec_beta"
 
 #define TR_ALICE "./bin/linreg/tr_alice"
 #define TR_BOB "./bin/linreg/tr_bob"

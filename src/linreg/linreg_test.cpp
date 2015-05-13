@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 	//long type = boost::lexical_cast<long>(argv[1]);
   ZZ q = boost::lexical_cast<ZZ>(argv[1]);
   ZZ_p::init(q);
+	ZZ prec = boost::lexical_cast<ZZ>(argv[2]);
 
 
 		Mat<ZZ_p> TO,AO,BO;
@@ -75,6 +76,35 @@ int main(int argc, char* argv[])
 		ooo_out << TOO;
 		ooo_out.close();
 
+		//Vec<ZZ> Beta;
+		//Beta.SetLength(TOO.NumRows());
+
+		std::ofstream out_beta(SEC_BETA, ios::trunc);
+
+		for (int i=0;i<TOO.NumRows();i++){
+			ZZ rem1;
+			string r;
+			rem1.SetSize(20);			
+			if (rep(TOO[i][0]) < rep(-TOO[i][0])){
+				rem(rem1,rep(TOO[i][0]),prec);
+				r = boost::lexical_cast<string>(rem1);
+				while (r.length() < 20) r = "0" + r;
+				//cout<<r.length()<<endl;
+				//cout<<rem1.size() << " " << log(rem1) <<endl;				 			 
+				out_beta << rep(TOO[i][0]) / prec << "." << r << "\n";						
+			}
+			else {
+				rem(rem1,rep(-TOO[i][0]),prec);	
+				r = boost::lexical_cast<string>(rem1);
+				while (r.length() < 20) r = "0" + r;
+				//cout<<rem1.size() << " " << log(rem1) <<endl;				 			 
+				out_beta << "-" << rep(-TOO[i][0]) / prec << "." << r << "\n";
+			}
+		}
+
+		out_beta.close();
+
+
 		Mat<ZZ_p> A1,B1;
 		//TO.SetDims(dim,dim);
 		//AO.SetDims(dim,dim);
@@ -104,6 +134,9 @@ int main(int argc, char* argv[])
 		t_bob.close();
 
 		cout << A2[0][0] + B2[0][0] <<endl;	
+
+
+		
 
 
 }

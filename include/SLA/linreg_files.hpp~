@@ -5,6 +5,9 @@
 #define XTF "./bin/linreg/xt_file"
 #define YF "./bin/linreg/y_file"
 
+#define YF_ALICE "./bin/linreg/yf_alice"
+#define YF_BOB "./bin/linreg/yf_bob"
+
 #define XTF_ALICE "./bin/linreg/xtf_alice"
 #define XTF_BOB "./bin/linreg/xtf_bob"
 
