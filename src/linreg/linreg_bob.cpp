@@ -1,5 +1,3 @@
-// Bernardo's Code :)
-
 #include <cstdlib>
 #include <iostream>
 #include <boost/shared_ptr.hpp>
@@ -14,13 +12,13 @@ int main(int argc, char* argv[])
 {
   try
   {
-    ZZ q = boost::lexical_cast<ZZ>(argv[1]);
+    ZZ q = boost::lexical_cast<ZZ>(argv[2]);
     ZZ_p::init(q);
     boost::asio::io_service io_service;
     tcp::resolver resolver(io_service);
-    tcp::resolver::query query(argv[2], argv[3]);
+    tcp::resolver::query query(argv[3], argv[4]);
 		tcp::resolver::iterator iterator = resolver.resolve(query);
-    twoparty_runner_ptr protocol(new innerprod_bob(argv[4],argv[5]));
+    twoparty_runner_ptr protocol(new innerprod_bob(argv[1],argv[5],argv[6],argv[7],argv[8]));
     tcp_client c(io_service, iterator, protocol);
     io_service.run();   
   }

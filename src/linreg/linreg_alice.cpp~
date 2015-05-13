@@ -15,13 +15,21 @@ int main(int argc, char* argv[])
 {
   try
   {
-    ZZ q = boost::lexical_cast<ZZ>(argv[1]);
+
+
+    ZZ q = boost::lexical_cast<ZZ>(argv[2]);
     ZZ_p::init(q);  
     set_seed_prng();    
     boost::asio::io_service io_service;
-    tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[2]));
-    twoparty_runner_ptr protocol(new linreg_alice(argv[3])); 
+    tcp::endpoint endpoint(tcp::v4(), std::atoi(argv[3]));
+    twoparty_runner_ptr protocol(new linreg_alice(argv[1],argv[4],argv[5],argv[6])); 
 		tcp_server server(io_service, endpoint, protocol);
+		int tr=1;
+		// kill "Address already in use" error message
+		if (setsockopt(7878,SOL_SOCKET,SO_REUSEADDR,&tr,sizeof(int)) == -1) {	
+    	perror("setsockopt");
+    	exit(1);
+		}
     io_service.run();
   }
   catch (std::exception& e)

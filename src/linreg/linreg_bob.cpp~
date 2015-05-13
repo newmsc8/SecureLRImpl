@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     tcp::resolver resolver(io_service);
     tcp::resolver::query query(argv[2], argv[3]);
 		tcp::resolver::iterator iterator = resolver.resolve(query);
-    twoparty_runner_ptr protocol(new innerprod_bob(argv[4]));
+    twoparty_runner_ptr protocol(new innerprod_bob(argv[4],argv[5],argv[6]));
     tcp_client c(io_service, iterator, protocol);
     io_service.run();   
   }

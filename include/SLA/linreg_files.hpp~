@@ -1,0 +1,58 @@
+#ifndef LINREG_FILES_HPP
+#define LINREG_FILES_HPP
+
+#define XF "./bin/linreg/x_file"
+#define XTF "./bin/linreg/xt_file"
+#define YF "./bin/linreg/y_file"
+
+#define XTF_ALICE "./bin/linreg/xtf_alice"
+#define XTF_BOB "./bin/linreg/xtf_bob"
+
+#define Z1_ALICE "./bin/linreg/z1_alice"
+#define Z1_BOB "./bin/linreg/z1_bob"
+#define Z1 "./bin/linreg/z1"
+#define Z2_ALICE "./bin/linreg/z2_alice"
+#define Z2_BOB "./bin/linreg/z2_bob"
+#define Z2 "./bin/linreg/z2"
+#define Z3_ALICE "./bin/linreg/z3_alice"
+#define Z3_BOB "./bin/linreg/z3_bob"
+#define Z3 "./bin/linreg/z3"
+#define Z4_ALICE "./bin/linreg/z4_alice"
+#define Z4_BOB "./bin/linreg/z4_bob"
+#define Z4 "./bin/linreg/z4"
+#define Z5_ALICE "./bin/linreg/z5_alice"
+#define Z5_BOB "./bin/linreg/z5_bob"
+#define Z5 "./bin/linreg/z5"
+
+#define TR_ALICE "./bin/linreg/tr_alice"
+#define TR_BOB "./bin/linreg/tr_bob"
+#define TR1_ALICE "./bin/linreg/tr1_alice"
+#define TR1_BOB "./bin/linreg/tr1_bob"
+#define TR2_ALICE "./bin/linreg/tr2_alice"
+#define TR2_BOB "./bin/linreg/tr2_bob"
+
+#define A_ALICE "./bin/linreg/a_alice"
+#define A_BOB "./bin/linreg/a_bob"
+#define B_ALICE "./bin/linreg/b_alice"
+#define B_BOB "./bin/linreg/b_bob"
+#define C_ALICE "./bin/linreg/c_alice"
+#define C_BOB "./bin/linreg/c_bob"
+#define X_ALICE "./bin/linreg/x_alice"
+#define X_BOB "./bin/linreg/x_bob"
+#define Y_ALICE "./bin/linreg/y_alice"
+#define Y_BOB "./bin/linreg/y_bob"
+#define XY_ALICE "./bin/linreg/xy_alice"
+#define XY_BOB "./bin/linreg/xy_bob"
+#define OUTPUT "./bin/linreg/output"
+#define OUT_ALICE "./bin/linreg/out_alice"
+#define OUT_BOB "./bin/linreg/out_bob"
+#define R_ALICE "./bin/linreg/r_alice"
+#define RP_ALICE "./bin/linreg/rp_alice"
+#define R_BOB "./bin/linreg/r_bob"
+#define RP_BOB "./bin/linreg/rp_bob"
+#define TR_OUT "./bin/linreg/trunc_out"
+#define R_OUT "./bin/linreg/r_out"
+#define RP_OUT "./bin/linreg/rp_out"
+
+
+#endif

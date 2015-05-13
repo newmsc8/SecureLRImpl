@@ -17,17 +17,58 @@ int main(int argc, char* argv[])
 {
   ZZ q = boost::lexical_cast<ZZ>(argv[1]);
   ZZ_p::init(q);
-  long dim = boost::lexical_cast<long>(argv[2]);
-	long bnd = boost::lexical_cast<long>(argv[3]);
-  set_seed_prng();
+	long prec = boost::lexical_cast<long>(argv[2]);
+	long dim1 = boost::lexical_cast<long>(argv[3]);	  
+	long dim2 = boost::lexical_cast<long>(argv[4]);
+	long dimA = boost::lexical_cast<long>(argv[5]);
+	long dimB = boost::lexical_cast<long>(argv[6]);
 
-	Mat<ZZ_p> X,XA,XB;
-  X.SetDims(dim,dim);
-	XA.SetDims(dim,dim);
-	XB.SetDims(dim,dim);
-  gen_rnd_mat(X,bnd,q);
-	gen_rnd_mat(XA);
-	sub(XB,X,XA);
+// testing the real data
+	Mat<ZZ_p> XR;
+	XR.SetDims(dim1,dim2);
+	ifstream xr_file("x_file.txt");
+	long k;
+	//xr_file >> k;
+	//cout<<k<<endl;
+	//xr_file >> XR;
+	for (int i=0; i<dim1; i++){
+		for (int j=0; j<dim2; j++){
+			xr_file >> k;
+			//cout<<k<<endl;
+			XR[i][j] = k;
+		}
+	}
+	xr_file.close();
+
+	//for (int i=0; i<10; i++){
+	//	for (int j=0; j<10; j++)
+	//		cout << XR[i][j] << " ";
+	//	cout<<endl;
+	//}
+
+///////////////////////////
+
+
+	Mat<ZZ_p> XA,XB;
+  //X.SetDims(dim,dim);
+	XA.SetDims(dim2,dim1);
+	XB.SetDims(dim2,dim1);
+  //gen_rnd_mat(X,2 * bnd - 1,q);
+	//for (long i = 0; i<dim; i++)
+	//	for (long j = 0; j<dim; j++)
+	//		X[i][j] = X[i][j] - bnd + 1;
+	//gen_rnd_mat(XA);
+	//sub(XB,X,XA);
+	for (int i=0;i<6;i++)
+		for (int j=0;j<25180;j++)
+			XA[i][j] = XR[j][i];
+	
+	for (int i=6;i<36;i++)
+		for (int j=0;j<25180;j++)
+			XB[i][j] = XR[j][i];
+
+	mul(XA,XA,100);
+	mul(XB,XB,100);
 	ofstream x_alice(X_ALICE, ios::trunc);
 	ofstream x_bob(X_BOB, ios::trunc);
 	x_alice << XA;
@@ -35,11 +76,45 @@ int main(int argc, char* argv[])
 	x_alice.close();
 	x_bob.close();
 
+
+
+
+	Mat<ZZ_p> YA,YB;
+  //X.SetDims(dim,dim);
+	YA.SetDims(25180,36);
+	YB.SetDims(25180,36);
+  //gen_rnd_mat(X,2 * bnd - 1,q);
+	//for (long i = 0; i<dim; i++)
+	//	for (long j = 0; j<dim; j++)
+	//		X[i][j] = X[i][j] - bnd + 1;
+	//gen_rnd_mat(XA);
+	//sub(XB,X,XA);
+	for (int i=0;i<6;i++)
+		for (int j=0;j<25180;j++)
+			YA[j][i] = XR[j][i];
+	
+	for (int i=6;i<36;i++)
+		for (int j=0;j<25180;j++)
+			YB[j][i] = XR[j][i];
+
+	mul(YA,YA,100);
+	mul(YB,YB,100);
+	ofstream y_alice(Y_ALICE, ios::trunc);
+	ofstream y_bob(Y_BOB, ios::trunc);
+	y_alice << YA;
+	y_bob << YB;
+	y_alice.close();
+	y_bob.close();
+
+/*
 	Mat<ZZ_p> Y,YA,YB;
   Y.SetDims(dim,dim);
 	YA.SetDims(dim,dim);
 	YB.SetDims(dim,dim);
-  gen_rnd_mat(Y,bnd,q);
+  gen_rnd_mat(Y,2 * bnd - 1,q);
+	for (long i = 0; i<dim; i++)
+		for (long j = 0; j<dim; j++)
+			Y[i][j] = Y[i][j] - bnd + 1;
 	gen_rnd_mat(YA);
 	sub(YB,Y,YA);
 	ofstream y_alice(Y_ALICE, ios::trunc);
@@ -48,7 +123,12 @@ int main(int argc, char* argv[])
 	y_bob << YB;
 	y_alice.close();
 	y_bob.close();
-
+*/
+	Mat<ZZ_p> X,Y;
+	X.SetDims(36,25180);
+	Y.SetDims(25180,36);
+	add(X,XA,XB);
+	add(Y,YA,YB);
 	mul(X,X,Y);
 	ofstream res_file(OUTPUT, ios::trunc);	
   res_file << X;

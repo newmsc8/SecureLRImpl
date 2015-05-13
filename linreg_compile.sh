@@ -17,9 +17,10 @@ case $1 in
 all)
 $0 alice
 $0 bob
-$0 inputgen
+$0 input
 $0 ti
 $0 test
+$0 sub
 ;;
 
 ti)
@@ -28,9 +29,15 @@ c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/linreg_ti $SRC/linreg_ti.cpp $NTL_LIB
 exit 0
 ;;
 
-inputgen)
-echo "Compiling "$SRC"/linreg_inputgen.cpp"
-c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/linreg_inputgen $SRC/linreg_inputgen.cpp $NTL_LIB $GMP_LIB
+sub)
+echo "Compiling "$SRC"/linreg_sub.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/linreg_sub $SRC/linreg_sub.cpp $NTL_LIB $GMP_LIB
+exit 0
+;;
+
+input)
+echo "Compiling "$SRC"/linreg_input.cpp"
+c++ -I $NTL -I $BOOST -I $SLA -m64 -o $BIN/linreg_input $SRC/linreg_input.cpp $NTL_LIB $GMP_LIB
 exit 0
 ;;
 
@@ -54,7 +61,7 @@ exit 0
 
 
 *)
-    echo "Usage: $0 {bob|alice|ti|inputgen|test}"
+    echo "Usage: $0 {bob|alice|ti|input|test}"
     exit 2
     ;;
 
