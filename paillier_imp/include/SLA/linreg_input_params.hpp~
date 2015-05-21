@@ -1,0 +1,26 @@
+#ifndef INNERPROD_PARAMS_HPP
+#define INNERPROD_PARAMS_HPP
+
+#define BIN "./bin/linreg"
+
+#define A_ALICE BIN + "a_alice"
+#define A_BOB BIN + "a_bob"
+#define B_ALICE BIN + "b_alice"
+#define B_BOB BIN + "b_bob"
+#define C_ALICE BIN + "c_alice"
+#define C_BOB BIN + "c_bob"
+#define X_ALICE BIN + "x_alice"
+#define X_BOB BIN + "x_bob"
+#define Y_ALICE BIN + "y_alice"
+#define Y_BOB BIN + "y_bob"
+#define XY_ALICE BIN + "xy_alice"
+#define XY_BOB BIN + "xy_bob"
+#define OUTPUT BIN + "output"
+#define OUT_ALICE BIN + "out_alice"
+#define OUT_BOB BIN + "out_bob"
+#define R_ALICE BIN + "r_alice"
+#define RP_ALICE BIN + "rp_alice"
+#define R_BOB BIN + "r_bob"
+#define RP_BOB BIN + "rp_bob"
+
+#endif

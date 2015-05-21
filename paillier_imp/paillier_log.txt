@@ -1,0 +1,5 @@
+starting
+read input
+alice generating
+bob generating
+paillier
