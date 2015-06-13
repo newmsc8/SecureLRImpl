@@ -13,6 +13,7 @@
 //#include <string>
 
 using namespace NTL;
+using namespace std;
 
 class linreg_alice
   : public twoparty_runner,
@@ -21,7 +22,6 @@ class linreg_alice
 public:
   linreg_alice(const char* t, const char* r, const char* c, const char* minus1)
   {
-
 		type = boost::lexical_cast<long>(t);
 		row = boost::lexical_cast<long>(r);
 		col = boost::lexical_cast<long>(c);
@@ -73,43 +73,29 @@ public:
 			in1A = Z4_ALICE;
 			in2A = YF_ALICE;			
 		}
-		//XA.SetDims(dim1,dim2);
-		//YA.SetDims(dim2,dim3);
-		//AA.SetDims(dim1,dim2);
-		//BA.SetDims(dim2,dim3);
-		//CA.SetDims(dim1,dim3);
-		//XAYA.SetDims(dim1,dim3);
-		//RA.SetDims(dim1,dim3);
-		//RPA.SetDims(dim1,dim3);
-
+		
     std::ifstream x_alice(in1A.c_str());
     x_alice >> XA;
     x_alice.close();
-    
     std::ifstream y_alice(in2A.c_str());
     y_alice >> YA;
     y_alice.close();
-
     std::ifstream a_alice(A_ALICE);
     a_alice >> AA;
     a_alice.close();
-
     std::ifstream b_alice(B_ALICE);
     b_alice >> BA;
     b_alice.close();
 
-    std::ifstream c_alice(C_ALICE);
+		std::ifstream c_alice(C_ALICE);
     c_alice >> CA;
     c_alice.close();
-
     std::ifstream xy_alice(XY_ALICE);
 		xy_alice >> XAYA;
 		xy_alice.close();
-
 		std::ifstream r_alice(R_ALICE);
     r_alice >> RA;
     r_alice.close();
-	
 		std::ifstream rp_alice(RP_ALICE);
     rp_alice >> RPA;
     rp_alice.close();
@@ -117,68 +103,36 @@ public:
 
   bool msg_w(protocol_message_ptr input_msg)
   {
-
 		Mat<ZZ_p> XBAB,YBBB,XAAA,YABA,DA,DB,XBABBA,AAYBBB;
-		//AAYBBB.SetDims(dim1,dim3);
-		//XBABBA.SetDims(dim1,dim3);
-		//XBAB.SetDims(dim1,dim2);
-		//YBBB.SetDims(dim2,dim3);
-		//XAAA.SetDims(dim1,dim2);
-		//YABA.SetDims(dim2,dim3);
 		DA.SetDims(dim1,dim3);
-		//DB.SetDims(dim1,dim3);
 
     protocol_message_ptr msg(new protocol_message);
-
     *(input_msg) >> XBAB >> YBBB;
-		//cout<< AA.NumRows() << " " <<AA.NumCols() << endl;
-		//cout<< XA.NumRows() << " " <<XA.NumCols() << endl;
 		sub(XAAA,XA,AA);
-		//cout<< YA.NumRows() << " " <<YA.NumCols() << endl;
-		//cout<< BA.NumRows() << " " <<BA.NumCols() << endl;
 		sub(YABA,YA,BA);
 	
 		gen_rnd_mat(DA);
-
 		mul(AAYBBB,AA,YBBB);
 		mul(XBABBA,XBAB,BA);
 
-
-		//cout<< AAYBBB.NumRows() << " " <<AAYBBB.NumCols() << endl;
-		//cout<< XAYA.NumRows() << " " <<XAYA.NumCols() << endl;
 		add(DB,XAYA,AAYBBB);
 
-
-
-		//cout<< DB.NumRows() << " " <<DB.NumCols() << endl;
-		//cout<< XBABBA.NumRows() << " " <<XBABBA.NumCols() << endl;
 		add(DB,DB,XBABBA);
-		//cout<< DB.NumRows() << " " <<DB.NumCols() << endl;
-		//cout<< DA.NumRows() << " " <<DA.NumCols() << endl;
 		sub(DB,DB,DA);
 	
 		*(msg) << XAAA << std::endl;
 		*(msg) << YABA << std::endl;
 		*(msg) << DB << std::endl;
 	
-		//cout<< DA.NumRows() << " " <<DA.NumCols() << endl;
-		//cout<< CA.NumRows() << " " <<CA.NumCols() << endl;	
 		add(CA,CA,DA);
 		// WA is CA from this point forward
-		//std::cout << CA[0][0] << std::endl;
-		//cout<< RA.NumRows() << " " <<RA.NumCols() << endl;
-		//cout<< CA.NumRows() << " " <<CA.NumCols() << endl;
 		add(RA,RA,CA);
 		// Send WA + RA to Bob
 		*(msg) << RA <<std::endl;
 
-		//cout<< RPA.NumRows() << " " <<RPA.NumCols() << endl;
-		//cout<< CA.NumRows() << " " <<CA.NumCols() << endl;
 		add(CA,CA,RPA);
-		//std::cout << CA[0][0] << std::endl;
 		// CA is WA + RPA from this point forward
 		mul(CA,CA,m1);
-		//std::cout << CA[0][0] << std::endl;
 		std::ofstream a_out(outA.c_str(), std::ios::trunc);
  	  a_out << CA;
   	a_out.close();
@@ -193,7 +147,6 @@ public:
   void receive_msg(protocol_message_ptr msg) 
   {
     msg_w(msg);
-    //terminate_protocol();
   }
   
 private:

@@ -79,42 +79,34 @@ public:
 			in1B = Z4_BOB;
 			in2B = YF_BOB;			
 		}
-		//XB.SetDims(dim1,dim2);
-		//YB.SetDims(dim2,dim3);
-		//AB.SetDims(dim1,dim2);
-		//BB.SetDims(dim2,dim3);
-		//CB.SetDims(dim1,dim3);
-		//XBYB.SetDims(dim1,dim3);
-
+		XB.SetDims(dim1,dim2);
+		YB.SetDims(dim2,dim3);
+		AB.SetDims(dim1,dim2);
+		BB.SetDims(dim2,dim3);
+		CB.SetDims(dim1,dim3);
+		XBYB.SetDims(dim1,dim3);
 		std::ifstream x_bob(in1B.c_str());
 		x_bob >> XB;
 		x_bob.close();
-		  
 		std::ifstream y_bob(in2B.c_str());
 		y_bob >> YB;
 		y_bob.close();
-
 		std::ifstream a_bob(A_BOB);
 		a_bob >> AB;
 		a_bob.close();
-
 		std::ifstream b_bob(B_BOB);
 		b_bob >> BB;
 		b_bob.close();
-
     std::ifstream c_bob(C_BOB);
     c_bob >> CB;
     c_bob.close();
-
 		std::ifstream xy_bob(XY_BOB);	
 		xy_bob >> XBYB;
 		xy_bob.close();
 
-
 		std::ifstream r_bob(R_BOB);
     r_bob >> RB;
     r_bob.close();
-
 		std::ifstream rp_bob(RP_BOB);
     rp_bob >> RPB;
     rp_bob.close();
@@ -123,27 +115,19 @@ public:
 
   bool msg_xayb()
   {
-
 		Mat<ZZ_p> XBAB,YBBB;
-		//XBAB.SetDims(dim,dim);
-		//YBBB.SetDims(dim,dim);
 		sub(XBAB,XB,AB);
 		sub(YBBB,YB,BB);
     protocol_message_ptr msg(new protocol_message);
 		*(msg) << XBAB << std::endl;
 		*(msg) << YBBB << std::endl;
     send_message(msg);
-
     return true;
   }
 
   bool msg_v(protocol_message_ptr msg)
   {
 		Mat<ZZ_p> XAAA,YABA,DB,ZA,XAAAYB,XBYABA;
-		//XAAA.SetDims(dim,dim);
-		//YABA.SetDims(dim,dim);
-		//DB.SetDims(dim,dim);
-		//ZA.SetDims(dim,dim);
 		*(msg) >> XAAA >> YABA >> DB >> ZA;
 		mul(XAAAYB,XAAA,YB);
 		mul(XBYABA,XB,YABA);
@@ -152,39 +136,26 @@ public:
 		add(CB,CB,XAAAYB);
 		add(CB,CB,XBYABA);
 
-		//std::cout << CB[0][0] << std::endl;
-
 		add(ZA,ZA,CB);
 		add(ZA,ZA,RB);
 
-
-	
-
 		Mat<ZZ> CP;
 		CP.SetDims(dim1,dim3);
-		//std::cout << ZA[0][0] << std::endl;
 		for (long i=0;i<dim1;i++)
 			for (long j=0;j<dim3;j++){
-				
-				//ZA[i][j]-(ZA[i][j]/prec)*prec
 				
 				CP[i][j]=rep(ZA[i][j]);
 				ZZ k;
 				rem(k,CP[i][j],rep(prec));
 				ZA[i][j] = boost::lexical_cast<ZZ_p>(k);
 			}
-		//std::cout << ZA[0][0] << std::endl;				
 			
 		add(CB,CB,RPB);
-		//std::cout << CB[0][0] << std::endl;
 		sub(CB,CB,ZA);
-		//std::cout << CB[0][0] << std::endl;
 		mul(CB,CB,m1);
-		//std::cout << CB[0][0] << std::endl;
 		ofstream b_out(outB.c_str(), ios::trunc);
 		b_out << CB;
   	b_out.close();
-
     gettimeofday(&now, NULL);
     exec_time = now.tv_sec - then.tv_sec + 1e-6 * (now.tv_usec - then.tv_usec); 
     std::cout << "Protocol execution time: " << exec_time << std::endl;

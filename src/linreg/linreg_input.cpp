@@ -16,6 +16,7 @@ int main(int argc, char* argv[])
 	long row = boost::lexical_cast<long>(argv[4]);
 	long col = boost::lexical_cast<long>(argv[5]);	  
 	long colA = boost::lexical_cast<long>(argv[6]);
+	ZZ_p in_prec = boost::lexical_cast<ZZ_p>(argv[7]);
 
 
 	if (type == 1){
@@ -24,16 +25,16 @@ int main(int argc, char* argv[])
 		YR.SetDims(row,1);
 		ifstream xr_file("x_file.txt");
 		ifstream yr_file("y_file.txt");
-		long k;
+		double d;
 		for (int i=0; i<row; i++){
 			for (int j=0; j<col; j++){
-				xr_file >> k;
-				XR[i][j] = k;
-				mul(XR[i][j],XR[i][j],prec);
+				xr_file >> d;
+				XR[i][j] = (long)(d * 100000);
+				mul(XR[i][j],XR[i][j],in_prec);
 			}
-			yr_file >> k;
-			YR[i][0] = k;
-			mul(YR[i][0],YR[i][0],prec);
+			yr_file >> d;
+			YR[i][0] = (long)(d * 100000);
+			mul(YR[i][0],YR[i][0],in_prec);
 		}
 		xr_file.close();
 		yr_file.close();
@@ -53,48 +54,61 @@ int main(int argc, char* argv[])
 			for (int j=colA;j<col;j++)
 				XB[i][j] = XT[j][i] = XTB[j][i] = XR[i][j];
 
+
+		//cout<<"x_file"<<endl;
 		ofstream x_file(XF,ios::trunc);
-		ofstream xa_file(Y_ALICE, ios::trunc);
-		ofstream xb_file(Y_BOB, ios::trunc);
-		ofstream xt_file(XTF,ios::trunc);
-		ofstream xta_file(X_ALICE, ios::trunc);
-		ofstream xtb_file(X_BOB, ios::trunc);
-		
-		ofstream xtf_alice(XTF_ALICE, ios::trunc);
-		ofstream xtf_bob(XTF_BOB, ios::trunc);
-
-		ofstream y_file(YF, ios::trunc);
 		x_file << XR;
-		xa_file << XA;
-		xb_file << XB;
-		xt_file << XT;
-		xta_file << XTA;
-		xtb_file << XTB;
-		xtf_alice << XTA;
-		xtf_bob << XTB;
-		y_file << YR;
 		x_file.close();		
+		//cout<<"xa_file"<<endl;
+		ofstream xa_file(Y_ALICE, ios::trunc);
+		xa_file << XA;
 		xa_file.close();
+		//cout<<"xb_file"<<endl;
+		ofstream xb_file(Y_BOB, ios::trunc);
+		xb_file << XB;
 		xb_file.close();
+		//cout<<"xt_file"<<endl;
+		ofstream xt_file(XTF,ios::trunc);
+		xt_file << XT;
 		xt_file.close();		
+		//cout<<"xta_file"<<endl;
+		ofstream xta_file(X_ALICE, ios::trunc);
+		xta_file << XTA;
 		xta_file.close();
+		//cout<<"xtb_file"<<endl;
+		ofstream xtb_file(X_BOB, ios::trunc);
+		xtb_file << XTB;
 		xtb_file.close();
+		//cout<<"xtfa_file"<<endl;
+		ofstream xtf_alice(XTF_ALICE, ios::trunc);
+		xtf_alice << XTA;
 		xtf_alice.close();
+		//cout<<"xtfb_file"<<endl;
+		ofstream xtf_bob(XTF_BOB, ios::trunc);
+		xtf_bob << XTB;
 		xtf_bob.close();
+		//cout<<"y_file"<<endl;
+		ofstream y_file(YF, ios::trunc);
+		y_file << YR;
 		y_file.close();
-
+		
+		
 		Mat<ZZ_p> YFA,YFB;
 		YFA.SetDims(row,1);
 		YFB.SetDims(row,1);
 		set_seed_prng();
+		//cout<<"Gen Random Matrix"<<endl;
 		gen_rnd_mat(YFA);
+		//cout<<"Subtracting"<<endl;
 		sub(YFB,YR,YFA);
+		//cout<<"writing yfa and yfb files"<<endl;
 		ofstream yf_alice(YF_ALICE, ios::trunc);
 		ofstream yf_bob(YF_BOB, ios::trunc);
 		yf_alice << YFA;
 		yf_bob << YFB;
 		yf_alice.close();
 		yf_bob.close();
+		//cout<<"All Done"<<endl;
 
 	}
 
@@ -121,8 +135,8 @@ int main(int argc, char* argv[])
 		cout << sumA + sumB << endl;
 		TRA[0][0] = sumA;
 		TRB[0][0] = sumB;
-		TR1A[0][0] = 100000000000;
-		TR1B[0][0] = 100000000000;
+		TR1A[0][0] = 100000;
+		TR1B[0][0] = 100000;
 		ofstream tr_alice(TR_ALICE,ios::trunc);
 		tr_alice << TRA; 
 		tr_alice.close();
@@ -145,9 +159,6 @@ int main(int argc, char* argv[])
 		Mat<ZZ_p> Z2A,Z2B,TR1A,TR1B;
 		ident(Z2A,col);
 		ident(Z2B,col);
-
-		//Z2A.SetDims(col,col);
-		//Z2B.SetDims(col,col);
 		
 		std::ifstream tr1_alice(TR1_ALICE);
 		tr1_alice >> TR1A;
